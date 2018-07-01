@@ -34,9 +34,9 @@ var IndexTemplate = HTML{
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	</head>
 	
-	<body style="background-color: black">
+	<body>
 		<div class="container-fluid">
-			<div class="row justify-content-center text-center" style="color: white; margin-top: 20%">
+			<div class="row justify-content-center text-center" style="margin-top: 20%">
 				<h1>Count of current users of MTProto Proxy: {{.Num}}</h1>
 			</div>
 		</div>
@@ -83,6 +83,6 @@ func init() {
 }
 
 func main() {
-	http.HandleFunc("/stat", sendStat)
+	http.HandleFunc("/", sendStat)
 	http.ListenAndServe(":80", nil)
 }
