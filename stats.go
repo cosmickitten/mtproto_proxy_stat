@@ -1,10 +1,12 @@
 package main
 
 import (
+	"github.com/DataDog/datadog-go/statsd"
 	"html/template"
 	"io/ioutil"
 	"net/http"
 	"runtime"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -80,9 +82,20 @@ func init() {
 			time.Sleep(10 * time.Second)
 		}
 	}()
+
+	go func() {
+		http.HandleFunc("/", sendStat)
+		http.ListenAndServe(":80", nil)
+	}()
 }
 
 func main() {
-	http.HandleFunc("/", sendStat)
-	http.ListenAndServe(":80", nil)
+	c, _ := statsd.New("172.17.0.3:8125")
+	c.Namespace = "mtproto."
+	c.Tags = append(c.Tags, "mtproto: main")
+	for {
+		num, _ := strconv.Atoi(Users.Num)
+		c.Count("users.count", int64(num), nil, 1)
+		time.Sleep(10 * time.Second)
+	}
 }
