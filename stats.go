@@ -5,11 +5,14 @@ import (
 	"html/template"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"runtime"
 	"strconv"
 	"strings"
 	"time"
 )
+
+var datadogIP = os.Getenv("DDGIP")
 
 // User struct contains num field
 type User struct {
@@ -90,7 +93,7 @@ func init() {
 }
 
 func main() {
-	c, _ := statsd.New("172.17.0.3:8125")
+	c, _ := statsd.New(datadogIP + ":8125")
 	c.Namespace = "mtproto."
 	c.Tags = append(c.Tags, "mtproto: main")
 	for {
