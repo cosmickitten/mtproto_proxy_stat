@@ -13,6 +13,7 @@ import (
 )
 
 var datadogIP = os.Getenv("DDGIP")
+var tagName = os.Getenv("TGN")
 
 // User struct contains num field
 type User struct {
@@ -86,19 +87,20 @@ func init() {
 		}
 	}()
 
+	// sending metrics to datadog
 	go func() {
-		http.HandleFunc("/", sendStat)
-		http.ListenAndServe(":80", nil)
+		c, _ := statsd.New(datadogIP + ":8125")
+		c.Namespace = "mtproto."
+		c.Tags = append(c.Tags, tagName)
+		for {
+			num, _ := strconv.Atoi(Users.Num)
+			c.Count("users.count", int64(num), nil, 1)
+			time.Sleep(10 * time.Second)
+		}
 	}()
 }
 
 func main() {
-	c, _ := statsd.New(datadogIP + ":8125")
-	c.Namespace = "mtproto."
-	c.Tags = append(c.Tags, "mtproto: main")
-	for {
-		num, _ := strconv.Atoi(Users.Num)
-		c.Count("users.count", int64(num), nil, 1)
-		time.Sleep(10 * time.Second)
-	}
+	http.HandleFunc("/", sendStat)
+	http.ListenAndServe(":80", nil)
 }
