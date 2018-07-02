@@ -51,6 +51,11 @@ var IndexTemplate = HTML{
 	</html>`,
 }
 
+func (u User) convert() int64 {
+	num, _ := strconv.Atoi(u.Num)
+	return int64(num)
+}
+
 // CurrenUsers fetching stats from mtproto proxy
 func CurrenUsers() (err error) {
 	response, err := http.Get(`http://localhost:2398/stats`)
@@ -93,8 +98,7 @@ func init() {
 		c.Namespace = "mtproto."
 		c.Tags = append(c.Tags, tagName)
 		for {
-			num, _ := strconv.Atoi(Users.Num)
-			c.Count("users.count", int64(num), nil, 1)
+			c.Count("users.count", Users.convert(), nil, 1)
 			time.Sleep(10 * time.Second)
 		}
 	}()
