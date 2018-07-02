@@ -4,13 +4,15 @@
 
 Telegram MTProto Proxy Docker image with statistics output
 
+# Examples
+
 MTProto Proxy browser output
 
-![works example screenshot](https://github.com/trigun117/mtproto_proxy_stat/blob/master/image.JPG)
+![example of browser output](https://github.com/trigun117/mtproto_proxy_stat/blob/master/image.JPG)
 
 MTProto Proxy Datadog graph
 
-![works example screenshot](https://github.com/trigun117/mtproto_proxy_stat/blob/master/image1.JPG)
+![datadog graph example](https://github.com/trigun117/mtproto_proxy_stat/blob/master/image1.JPG)
 
 # Get Started
 
