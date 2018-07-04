@@ -1,15 +1,15 @@
 package main
 
 import (
-	"github.com/DataDog/datadog-go/statsd"
 	"html/template"
 	"io/ioutil"
 	"net/http"
 	"os"
-	"runtime"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/DataDog/datadog-go/statsd"
 )
 
 var datadogIP = os.Getenv("DDGIP")
@@ -85,7 +85,7 @@ func sendStat(w http.ResponseWriter, r *http.Request) {
 
 func init() {
 	const updateTick = 10 * time.Second
-	
+
 	updateUsers := time.NewTicker(updateTick)
 	defer updateUsers.Stop()
 	go func() {
