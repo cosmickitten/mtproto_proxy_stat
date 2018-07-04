@@ -84,22 +84,25 @@ func sendStat(w http.ResponseWriter, r *http.Request) {
 }
 
 func init() {
+	const updateTick = 10 * time.Second
+	
+	updateUsers := time.NewTicker(updateTick)
+	defer updateUsers.Stop()
 	go func() {
-		for {
-			defer runtime.GC()
+		for range updateUsers.C {
 			CurrenUsers()
-			time.Sleep(10 * time.Second)
 		}
 	}()
 
 	// sending metrics to datadog
+	sendStats := time.NewTicker(updateTick)
+	defer sendStats.Stop()
 	go func() {
 		c, _ := statsd.New(datadogIP + ":8125")
 		c.Namespace = "mtproto."
 		c.Tags = append(c.Tags, tagName)
-		for {
+		for range sendStats.C {
 			c.Count("users.count", Users.convert(), nil, 1)
-			time.Sleep(10 * time.Second)
 		}
 	}()
 }
