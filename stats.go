@@ -16,7 +16,7 @@ var (
 	datadogIP = os.Getenv("DDGIP")
 	tagName   = os.Getenv("TGN")
 	t, _      = strconv.Atoi(os.Getenv("TIMEOUT"))
-	timeout   = time.Duration(t)
+	timeout   = time.Duration(t) * time.Second
 )
 
 // User struct contains num field
@@ -89,11 +89,9 @@ func sendStat(w http.ResponseWriter, r *http.Request) {
 
 func init() {
 	if t == 0 {
-		timeout = 10
+		timeout = 10 * time.Second
 	}
-}
 
-func init() {
 	go func() {
 		for t := time.Tick(timeout); ; <-t {
 			if err := CurrenUsers(); err != nil {
