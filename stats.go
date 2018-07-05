@@ -91,7 +91,9 @@ func init() {
 	if t == 0 {
 		timeout = 10
 	}
+}
 
+func init() {
 	go func() {
 		for t := time.Tick(timeout); ; <-t {
 			if err := CurrenUsers(); err != nil {
