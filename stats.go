@@ -1,19 +1,23 @@
 package main
 
 import (
-	"github.com/DataDog/datadog-go/statsd"
 	"html/template"
 	"io/ioutil"
 	"net/http"
 	"os"
-	"runtime"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/DataDog/datadog-go/statsd"
 )
 
-var datadogIP = os.Getenv("DDGIP")
-var tagName = os.Getenv("TGN")
+var (
+	datadogIP = os.Getenv("DDGIP")
+	tagName   = os.Getenv("TGN")
+	t, _      = strconv.Atoi(os.Getenv("TIMEOUT"))
+	timeout   = time.Duration(t)
+)
 
 // User struct contains num field
 type User struct {
@@ -84,22 +88,28 @@ func sendStat(w http.ResponseWriter, r *http.Request) {
 }
 
 func init() {
+	if t == 0 {
+		timeout = 10
+	}
+
 	go func() {
-		for {
-			defer runtime.GC()
-			CurrenUsers()
-			time.Sleep(10 * time.Second)
+		for t := time.Tick(timeout); ; <-t {
+			if err := CurrenUsers(); err != nil {
+				continue
+			}
 		}
 	}()
 
 	// sending metrics to datadog
-	go func() {
-		c, _ := statsd.New(datadogIP + ":8125")
+	go func() error {
+		c, err := statsd.New(datadogIP + ":8125")
+		if err != nil || len(datadogIP) == 0 {
+			return err
+		}
 		c.Namespace = "mtproto."
 		c.Tags = append(c.Tags, tagName)
-		for {
+		for t := time.Tick(timeout); ; <-t {
 			c.Count("users.count", Users.convert(), nil, 1)
-			time.Sleep(10 * time.Second)
 		}
 	}()
 }

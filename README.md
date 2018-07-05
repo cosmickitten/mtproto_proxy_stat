@@ -36,6 +36,7 @@ docker run -d \
 -e WORKERS=16 \
 -e DDGIP=datadog_ip \
 -e TGN=datadog_tag_name \
+-e TIMEOUT=update_period \
 -v proxy-config:/data \
 --link=dd-agent \
 --name=mtproto \
