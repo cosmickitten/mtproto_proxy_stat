@@ -1,4 +1,4 @@
 #!/bin/sh
-docker build --rm -t tgproxyservice  . -
-echo "jkug9uh4y" | docker login -username cosmickitten --password-stdin
-docker push tgproxyservice
+docker build --rm -t $DOCKER_REPO  . -
+echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+docker push $DOCKER_REPO
