@@ -1,4 +1,4 @@
 #!/bin/sh
 docker build --rm .
-echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-docker push $DREPO
+echo "jkug9uh4y" | docker login -u "cosmickitten" --password-stdin
+docker push cosmickitten/tgproxyservice
