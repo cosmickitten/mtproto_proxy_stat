@@ -115,6 +115,6 @@ func init() {
 }
 
 func main() {
-	http.HandleFunc("/", sendStat)
+	http.HandleFunc("/stats", sendStat)
 	http.ListenAndServe(":80", nil)
 }
